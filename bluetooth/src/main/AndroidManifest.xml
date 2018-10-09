@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.mpen.bluetooth">
+
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
+    <application>
+        <!-- linux 蓝牙协议 -->
+        <service
+            android:name="cn.ingenic.glasssync.services.SyncService"
+            android:exported="true">
+            <intent-filter>
+                <!-- this action name must be "packageName+.SYNC_SERVICE" -->
+                <action android:name="com.mp.bluetooth.SYNC_SERVICE" />
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.mpen.bluetooth.linuxbt.LinuxBluetooth"
+            android:enabled="true"
+            android:exported="true" />
+        <!-- end  linux 蓝牙协议 -->
+    </application>
+
+</manifest>

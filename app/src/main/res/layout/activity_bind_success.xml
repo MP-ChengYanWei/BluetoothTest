@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/type0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="获取WIFI列表" />
+
+                <Button
+                    android:id="@+id/type1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="设置WIFI"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/type2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="已下载列表" />
+
+                <Button
+                    android:id="@+id/type3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="删除下载内容"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/type4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="添加下载内容"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/type5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="更新下载内容进度"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/type7"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="做自测题"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/type8"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="设备信息" />
+
+                <Button
+                    android:id="@+id/type29"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="播放绑定成功" />
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <TextView
+            android:id="@+id/tv_device"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center" />
+
+    </LinearLayout>
+</ScrollView>

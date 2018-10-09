@@ -1,0 +1,88 @@
+该模块为近场通信模块中的蓝牙通信基础模块：
+
+该模块用法如下：
+- - 1.AndroidBtDevice，为外部提供相应的方法,主要方法如下：
+         public boolean startDiscovery()        //开始找寻设备
+         public boolean cancelDiscovery()       //停止搜寻设备
+         public void connect(String address)    //连接地址为address的设备
+         public void connect(Intent data)       //连接data中BluetoothState.EXTRA_DEVICE_ADDRESS提供的设备，通过data可传递数据
+         public void disconnect()               //断开连接的方法
+         public void send(String data, boolean CRLF)  //向已连接设备发送消息的方法，data为消息主体，CRLF为回车符
+         public String getConnectedDeviceName()       //获取连接的设备名称
+         public String getConnectedDeviceAddress()    //获取连接的设备地址
+         public String[] getPairedDeviceName()        //获取周围设备名称
+         public String[] getPairedDeviceAddress()     //获取周围设备地址
+         public void autoConnect(String keywordName)  //自动连接方法
+         public int getServiceState()                 //获取此时蓝牙状态
+         ...
+         BluetoothStateListener           //提供了蓝牙状态的监听
+         OnDataReceivedListener           //提供了收发数据的监听
+         BluetoothConnectionListener      //提供了蓝牙连接状态的监听
+         AutoConnectionListener           //提供了自动连接的监听
+- - 2.实现逻辑：
+         蓝牙的连接和通信逻辑主要在BluetoothService.class中实现，内部提供了 AcceptThread、ConnectThread、ConnectedThread三个主要线程
+         AcceptThread：This thread runs while listening for incoming connections.
+         ConnectThread：该线程提供了收发数据的功能，通过 BluetoothState.MESSAGE_READ 进行收发的 key
+         ConnectedThread:This thread runs while attempting to make an outgoing connection with a device.
+                         It runs straight through the connection either succeeds or fails
+         除此之外提供了给BLuetoothSPP的connect()等方法、以及内部状态的监听。
+         以下为监听示例：
+
+         //点击连接，对连接结果的监听
+         btn.setBluetoothConnectionListener(new BluetoothConnectionListener() {
+             public void onDeviceConnected(String name, String address) {
+                 // 成功连接
+             }
+
+             public void onDeviceDisconnected() {
+                 // 断开连接
+             }
+
+             public void onDeviceConnectionFailed() {
+                 // 连接失败
+             }
+         });
+
+         //对连接过程状态的监听
+         btn.setBluetoothStateListener(new BluetoothStateListener() {
+             public void onServiceStateChanged(int state) {
+                 if(state == BluetoothState.STATE_CONNECTED)
+                     // 成功连接上
+                 else if(state == BluetoothState.STATE_CONNECTING)
+                     // 正在连接
+                 else if(state == BluetoothState.STATE_LISTEN)
+                     // 等待连接
+                 else if(state == BluetoothState.STATE_NONE)
+                     // 设备为空
+             }
+         });
+         ...
+- - 3.具体实现：1.收发数据通过BLuetoothService中的ConnectedThread线程完成，实现如下：
+                 if (data == 0x0D) {
+                        buffer = new byte[arr_byte.size()];
+                        for (int i = 0; i < arr_byte.size(); i++) {
+                            buffer[i] = arr_byte.get(i).byteValue();
+                        }
+                        mHandler.obtainMessage(BluetoothState.MESSAGE_READ,
+                                buffer.length, -1, buffer).sendToTarget();
+                 }
+                 2.连接过程如下：
+                 try {
+                     mmSocket.connect();
+                 } catch (IOException e) {
+                     try {
+                         mmSocket.close();
+                     } catch (IOException e2) {
+                     }
+                     connectionFailed();
+                     return;
+                 }
+
+                 synchronized (BluetoothService.this) {
+                     mConnectThread = null;
+                 }
+                 connected(mmSocket, mmDevice, mSocketType);
+
+                 ...
+
+- - 4.参考网址  https://github.com/akexorcist/Android-BluetoothSPPLibrary
