@@ -10,6 +10,7 @@ import com.google.gson.reflect.TypeToken;
 import com.mpen.bluetooth.common.VideoInfos;
 import com.mpen.bluetooth.constant.BTConstants;
 import com.mpen.bluetooth.utils.Contants;
+import com.mpen.bluetooth.utils.DataController;
 import com.mpen.bluetooth.utils.PenUtils;
 
 import org.json.JSONArray;
@@ -34,6 +35,7 @@ public class BluetoothDataProcessor implements BluetoothManager.BluetoothListene
     public void onReveiveData(String message, Context content) {
         Log.d(TAG, "onReveiveData: " + message);
         Log.i("Linux", "<<<<JSON<<<<: " + message);
+        DataController.getInstance().appendData("笔端消息：" + message);
         Intent receiveIntent = new Intent(BTConstants.RECEIVE_DATA);
         receiveIntent.putExtra("data", message);
         content.sendBroadcast(receiveIntent);

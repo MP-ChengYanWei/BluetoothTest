@@ -19,6 +19,8 @@ import java.util.LinkedHashMap;
 
 public class SendRequestToPen {
 
+    public static int msgid = 1;
+
     private static DDBConnectNormal ddbConnectNormal = new DDBConnectNormal();
 
     /***
@@ -250,5 +252,56 @@ public class SendRequestToPen {
 
     public static void sendTextMsg(int msgId, String text) {
         ddbConnectNormal.sendMsg("{\"data\":{\"active\":\"P\",\"msgid\":\"" + msgId + "\",\"text\":\"" + text + "\"},\"type\":1}");
+    }
+
+    public static void sendMsg(int type, String active, String text) {
+        ddbConnectNormal.sendMsg("{\"type\":" + type + ",\"data\":{\"msgid\":" + msgid++ + ",\"text\":\"" + text + "\",\"active\":\"" + active + "\"}}");
+    }
+
+    public static void sendCfgMsg(String active) {
+        ddbConnectNormal.sendMsg("{\"type\":1,\"data\":{\"msgid\":" + msgid++ + ",\"cfg\":{\"msgid\":0},\"active\":\"" + active + "\"}}");
+    }
+
+    public static void sendCfgMsg(int count, int cycle) {
+        ddbConnectNormal.sendMsg("{\"type\":1,\"data\":{\"msgid\":" + msgid++ + ",\"cfg\":{\"msgid\":0},\"active\":\"S\"}}");
+    }
+
+    /**
+     * 单条数据收发
+     *
+     * @param size 数据长度
+     */
+    public static void sendSRT(int type, int size) {
+        ddbConnectNormal.sendMsg("{\"type\":" + type + ",\"data\":{\"msgid\":" + msgid++ + ",\"cfg\":{\"size\":" + size + ",\"parallels\":1,\"cycle\":0,\"count\":1,\"type\":2},\"active\":\"S\"}}");
+    }
+
+    /**
+     * 单条数据收发
+     *
+     * @param size 数据长度
+     */
+    public static void sendSRT(int size, int count, int cycle) {
+        ddbConnectNormal.sendMsg("{\"type\":1,\"data\":{\"msgid\":" + msgid++ + ",\"cfg\":{\"size\":" + size + ",\"parallels\":1,\"cycle\":" + cycle + ",\"count\":" + count + ",\"type\":2},\"active\":\"S\"}}");
+    }
+
+    public static void getTestWifiList(int num) {
+        ddbConnectNormal.sendMsg("{\"type\":1,\"data\":{\"msgid\":" + msgid++ + ",\"active\":\"WD\",\"cfg\":{\"detect_num\":" + num + "}}}");
+    }
+
+    public static void connWifi(String wifiInfo) {
+        ddbConnectNormal.sendMsg("{\"type\":1,\"data\":{\"msgid\":" + msgid++ + ",\"cfg\":{\"wifi_data\":[" + wifiInfo + "]},\"active\":\"WC\"}}");
+    }
+
+    public static void sendActive(String active) {
+        ddbConnectNormal.sendMsg("{\"type\":1,\"data\":{\"msgid\":" + msgid++ + ",\"active\":\"" + active + "\"}}");
+    }
+
+    /**
+     * 切换笔程序
+     *
+     * @param model T 测试程序  B  主程序
+     */
+    public static void switchModel(String model) {
+        ddbConnectNormal.sendMsg("{\"type\":-1,\"data\":{\"msgid\":" + msgid++ + ",\"active\":\"" + model + "\"}}");
     }
 }

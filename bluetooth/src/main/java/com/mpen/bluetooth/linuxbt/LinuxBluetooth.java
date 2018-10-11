@@ -11,6 +11,7 @@ import android.util.Log;
 import com.mpen.bluetooth.androidbt.AndroidBluetooth;
 import com.mpen.bluetooth.constant.BTConstants;
 import com.mpen.bluetooth.controller.BluetoothManager;
+import com.mpen.bluetooth.utils.DataController;
 import com.mpen.bluetooth.utils.SPUtils;
 
 import java.lang.reflect.Method;
@@ -107,22 +108,23 @@ public class LinuxBluetooth implements EnviromentCallback {
             } else if (DefaultSyncManager.RECEIVER_ACTION_DISCONNECTED.equals(intent.getAction())) {
                 Log.d(TAG, "linuxBluetoothReceiver == onReceive: 绑定失败！！！ " + intent.getAction());
                 Log.e(TAG, "绑定失败！！！");
+                mContext.sendBroadcast(new Intent(BTConstants.CONNECT_ING_ERROR_ACTION));//发一条连接失败的广播
             } else if (DefaultSyncManager.RECEIVER_ACTION_STATE_CHANGE.equals(intent.getAction())) {
                 Log.w(TAG, "RECEIVER_ACTION_STATE_CHANGE !");
-                int state = intent.getIntExtra(DefaultSyncManager.EXTRA_STATE,
-                        DefaultSyncManager.IDLE);
+                int state = intent.getIntExtra(DefaultSyncManager.EXTRA_STATE, DefaultSyncManager.IDLE);
                 boolean isConnect = (state == DefaultSyncManager.CONNECTED) ? true : false;
                 Log.i(TAG, isConnect + "    isConnect");
 
                 if (isConnect) {
                     addr = mManager.getLockedAddress();
                     if (addr.equals("")) {
-                        Log.w(TAG,
-                                "local has disconnect,but remote not get notificaton.notify again!");
+                        Log.w(TAG, "local has disconnect,but remote not get notificaton.notify again!");
                         mManager.disconnect();
                     } else {
                         mManager.setLockedAddress(addr);
                         Log.d(TAG, "onReceive: 发送请求！！！！！！！！！！！！");
+                        BluetoothManager.DEVICE_ADDRESS = addr;
+                        DataController.getInstance().appendData("已连接设备：" + addr);
                         BluetoothManager.getInstance().onConnectionStateChange(BluetoothManager.deviceType.LINUX_BT_TYPE, 3);
                         // 此广播在上一行代码会发送无须发送多次
 //                        mContext.sendBroadcast(new Intent(BTConstants.APP_CONNECT_SUCCESS_ACTION));//发一条配对成功的广播

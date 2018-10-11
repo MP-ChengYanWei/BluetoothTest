@@ -8,6 +8,7 @@ import com.mpen.bluetooth.bluetooth.Packet;
 import com.mpen.bluetooth.common.DataRecord;
 import com.mpen.bluetooth.constant.BTConstants;
 import com.mpen.bluetooth.controller.BluetoothManager;
+import com.mpen.bluetooth.utils.DataController;
 import com.mpen.bluetooth.utils.FileUtil;
 
 import java.io.UnsupportedEncodingException;
@@ -73,6 +74,7 @@ public class SyncDataModule extends SyncModule implements SyncModule.ISyncServic
         Log.i(TAG, "onConnectionStateChanged :: connect = " + connect);
         if (!connect) {
             // 与LINUX笔断开连接，刷新界面
+            DataController.getInstance().appendData("蓝牙连接断开：" + BluetoothManager.DEVICE_ADDRESS);
             BluetoothManager.isConnenct = false;  //为不波及其它位置，先放于此处
             mContext.sendBroadcast(new Intent(BTConstants.APP_CONNECT_ERROR_ACTION));
         }

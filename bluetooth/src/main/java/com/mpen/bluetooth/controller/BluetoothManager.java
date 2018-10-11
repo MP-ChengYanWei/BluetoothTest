@@ -16,6 +16,7 @@ import com.mpen.bluetooth.common.DataRecord;
 import com.mpen.bluetooth.constant.BTConstants;
 import com.mpen.bluetooth.init.MpenBluetooth;
 import com.mpen.bluetooth.linuxbt.LinuxBluetooth;
+import com.mpen.bluetooth.utils.DataController;
 
 import java.util.ArrayList;
 
@@ -36,6 +37,7 @@ public class BluetoothManager implements DeviceListener {
 
     public static String linuxName = "MPENLS";
     public static String androidName = "MPEN";
+    public static String DEVICE_ADDRESS;//连接的设备蓝牙地址
 
     //笔和App是否连接
     public static boolean isConnenct = false;
@@ -63,6 +65,7 @@ public class BluetoothManager implements DeviceListener {
     }
 
     private deviceType curBtType; //当前连接蓝牙类型
+    public deviceType connBtType; //连接的成功的蓝牙类型
 
     private static BluetoothManager INSTANCE;
 
@@ -228,6 +231,8 @@ public class BluetoothManager implements DeviceListener {
             return;
         }
         Log.d(TAG, "sendData: curBtType == " + curBtType);
+        DataController.getInstance().appendData("*****************华丽的分割线*****************");
+        DataController.getInstance().appendData("手机消息：" + str);
         switch (curBtType) {
             case LINUX_BT_TYPE://linux 蓝牙
                 Log.d(TAG, "sendData: " + str);
@@ -252,6 +257,9 @@ public class BluetoothManager implements DeviceListener {
                 Log.e(TAG, "curBtType 类型不存 !");
 
         }
+        Intent receiveIntent = new Intent(BTConstants.SEND_DATA);
+        receiveIntent.putExtra("data", str);
+        context.sendBroadcast(receiveIntent);
     }
 
     /**
@@ -264,6 +272,7 @@ public class BluetoothManager implements DeviceListener {
     public void onConnectionStateChange(deviceType btType, int state) {
         Log.d(TAG, "onConnectionStateChange: " + btType + "  " + state);
         curBtType = btType;
+        connBtType = btType;
         if (state == 3) {
             isConnenct = true;
             context.sendBroadcast(new Intent(BTConstants.APP_CONNECT_SUCCESS_ACTION));

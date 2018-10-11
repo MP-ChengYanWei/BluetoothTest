@@ -22,6 +22,10 @@ public class BTConstants {
     /************业务相关的数据 start***************/
     //收到的消息的广播
     public static final String RECEIVE_DATA = "com.whaty.receive_data_action";
+    //发送消息的广播
+    public static final String SEND_DATA = "com.whaty.send_data_action";
+    //连接过程中的连接失败
+    public static final String CONNECT_ING_ERROR_ACTION = "com.whaty.connect_ing_error_action";
     //获取wifi列表的广播
     public static final String GET_WIFI_LIST_ACTION = "com.whaty.get_wifi_list_action";
     //获取下载列表的广播

@@ -17,8 +17,9 @@ import java.util.Date;
 
 public class FileUtil {
 
+    /****************************蓝牙测试********************************/
     /**
-     * 获取到异常时文件保存路径
+     * 蓝牙测试数据文件保存路径
      */
     private static String filePath = TextUtils.isEmpty(getSDPath()) ? null : getSDPath() + "/BluetoothTestDataLog.txt";
 
@@ -29,6 +30,7 @@ public class FileUtil {
         sb.append(msg).append("\r\n");
         stringToFile(filePath, sb.toString(), true);
     }
+    /****************************蓝牙测试********************************/
 
     /**
      * 获取sd卡路径
