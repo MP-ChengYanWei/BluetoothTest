@@ -19,7 +19,7 @@ public class PacketBuilder {
     public static boolean isphone = true;// true 手机 ；false笔
 
     public static void initPlatform(boolean isPhone) {
-        isphone=isPhone;
+        isphone = isPhone;
         serialNumber = isPhone ? 0 : 1;
         // 手机的序列号用偶数，笔的用奇数
     }
@@ -63,18 +63,18 @@ public class PacketBuilder {
      *            json最大数据
      * @return
      */
-    private static int getEstimatedDataLength(int bluetoothPackLimit, int serialNum, int packetNum,
-                                              int jsonDataLength) {
+    private static int getEstimatedDataLength(int bluetoothPackLimit, int serialNum, int packetNum, int jsonDataLength) {
 
         bluetoothPackLimit -= 7;// 去掉 必须的 4个_一个@ 两位校验位
 
         bluetoothPackLimit -= numHexDigits(serialNum);// 去掉 序列号
         bluetoothPackLimit -= numHexDigits(packetNum);// 去掉 包序号
 
-        if (packetNum == 1) {
+        // TODO: 2018/10/16 构建消息时每条都加一个长度
+//        if (packetNum == 1) {
             bluetoothPackLimit--;// 去掉 _
-            bluetoothPackLimit -= numHexDigits(jsonDataLength);// 去掉 包序号
-        }
+            bluetoothPackLimit -= numHexDigits(jsonDataLength);// 去掉 包长度
+//        }
 
         final int total =
                 (jsonDataLength + bluetoothPackLimit - 1) / bluetoothPackLimit;
@@ -141,18 +141,16 @@ public class PacketBuilder {
 
     }
 
-    private static Packet getPacket(ByteBuffer buffer, byte version, int serialNum, int PacketNum, int packetSize,
-                                    int jsonDataLength) {
+    private static Packet getPacket(ByteBuffer buffer, byte version, int serialNum, int PacketNum, int packetSize, int jsonDataLength) {
         // TODO Auto-generated method stub
 
         final byte[] tmpJsonDataByte = new byte[buffer.position()];
         buffer.flip();
         buffer.get(tmpJsonDataByte, 0, tmpJsonDataByte.length);
         buffer.clear();
-        if (PacketNum != 1) {
-            jsonDataLength = 0;
-        }
-
-        return new Packet(version, serialNum, PacketNum, packetSize, jsonDataLength, tmpJsonDataByte);
+//        if (PacketNum != 1) {
+//            jsonDataLength = 0;
+//        }
+        return new Packet(version, serialNum, PacketNum, packetSize, jsonDataLength, tmpJsonDataByte, true);
     }
 }

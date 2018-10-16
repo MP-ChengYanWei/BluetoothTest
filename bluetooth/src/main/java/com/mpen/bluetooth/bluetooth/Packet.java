@@ -11,8 +11,10 @@ public final class Packet {
     public final int dataLength;// json 数据的总长度
     private byte[] dataBytes;// json按照 bytes 方式存储
     private byte crcByte;// 校验位
+    private boolean isBuild = false;//构建消息还是解析消息
 
-    public Packet(byte version, int serialNumber, int packNo, int totalPack, int dataLength) {
+    public Packet(byte version, int serialNumber, int packNo, int totalPack, int dataLength, boolean isBuild) {
+        this.isBuild = isBuild;
         // TODO Auto-generated constructor stub
         this.version = version;
         this.serialNumber = serialNumber;
@@ -21,8 +23,8 @@ public final class Packet {
         this.dataLength = dataLength;
     }
 
-    public Packet(byte version, int serialNumber, int packNo, int totalPack, int dataLength, byte[] dataBytes) {
-        this(version, serialNumber, packNo, totalPack, dataLength);
+    public Packet(byte version, int serialNumber, int packNo, int totalPack, int dataLength, byte[] dataBytes, boolean isBuild) {
+        this(version, serialNumber, packNo, totalPack, dataLength, isBuild);
         this.dataBytes = dataBytes;
     }
 
@@ -108,16 +110,21 @@ public final class Packet {
         }
     }
 
+
     private String getPacketHead2Str() {
-        if (this.packNo != 1) {
-            return String.format("%c_%X_%X_%X", this.version,
+        if (isBuild || this.packNo == 1) {
+            return String.format("%c_%X_%X_%X_%X",
+                    this.version,
                     this.serialNumber,
-                    this.packNo, this.totalPack);
-        } else {
-            return String.format("%c_%X_%X_%X_%X", this.version,
-                    this.serialNumber,
-                    this.packNo, this.totalPack,
+                    this.packNo,
+                    this.totalPack,
                     this.dataLength);
+        } else {
+            return String.format("%c_%X_%X_%X",
+                    this.version,
+                    this.serialNumber,
+                    this.packNo,
+                    this.totalPack);
         }
     }
 

@@ -33,6 +33,11 @@ public class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         registerReceiver();
+        if (BluetoothManager.isConnenct) {
+            getSupportActionBar().setTitle("已连接：" + BluetoothManager.DEVICE_ADDRESS);
+        } else {
+            getSupportActionBar().setTitle("未连接");
+        }
     }
 
     /**

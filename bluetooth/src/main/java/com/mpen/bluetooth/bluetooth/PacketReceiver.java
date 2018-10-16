@@ -39,9 +39,9 @@ public class PacketReceiver {
         int dataLength = 0;
         if (headTemp.length == 5) {
             dataLength = Integer.parseInt(headTemp[4], 16);// json 数据的总长度
-            packet = new Packet(version, serialNumber, packNo, totalPack, dataLength);
+            packet = new Packet(version, serialNumber, packNo, totalPack, dataLength, false);
         } else {
-            packet = new Packet(version, serialNumber, packNo, totalPack, dataLength);
+            packet = new Packet(version, serialNumber, packNo, totalPack, dataLength, false);
         }
 
         return packet;
