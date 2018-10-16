@@ -70,6 +70,18 @@
                     android:textColor="#111"
                     android:textSize="14sp" />
 
+                <TextView
+                    android:id="@+id/tv_stop"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/shape_menu_bg"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="停止"
+                    android:textColor="#a800b5"
+                    android:visibility="gone" />
+
                 <ScrollView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

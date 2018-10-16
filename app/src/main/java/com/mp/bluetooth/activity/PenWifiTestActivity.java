@@ -6,13 +6,29 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
+import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.mp.bluetooth.R;
+import com.mp.bluetooth.activity.adapter.WifiResultListAdapter;
+import com.mp.bluetooth.activity.bean.NetworkResult;
+import com.mp.bluetooth.activity.bean.PenId;
+import com.mp.bluetooth.activity.bean.WifiTestResult;
+import com.mp.sharedandroid.network.MPNetwork;
+import com.mp.sharedandroid.network.MPNetworkListener;
+import com.mp.sharedandroid.network.MPRequest;
+import com.mp.sharedandroid.network.ResultParse;
 import com.mpen.bluetooth.constant.BTConstants;
 import com.mpen.bluetooth.controller.SendRequestToPen;
 import com.mpen.bluetooth.utils.DataController;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 笔上的WIFI测试   笔与后台的交互
@@ -21,8 +37,12 @@ import com.mpen.bluetooth.utils.DataController;
 
 public class PenWifiTestActivity extends BaseActivity {
 
+    private List<WifiTestResult> wifiTestResultList = new ArrayList<>();
     private ScrollView scrollView;
     private TextView tvData;
+    private String url = "https://test.mpen.com.cn/v1/pens/wifiTest?action=getDdbPenWifiTest&fkPenId=";
+    private ListView lvWifiResult;
+    private WifiResultListAdapter adapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,6 +61,10 @@ public class PenWifiTestActivity extends BaseActivity {
     private void initView() {
         scrollView = findViewById(R.id.scrollView);
         tvData = findViewById(R.id.tv_data);
+        lvWifiResult = findViewById(R.id.lv_wifi_test_result);
+
+        adapter = new WifiResultListAdapter(this, wifiTestResultList);
+        lvWifiResult.setAdapter(adapter);
     }
 
     /**
@@ -80,8 +104,50 @@ public class PenWifiTestActivity extends BaseActivity {
                 case BTConstants.RECEIVE_DATA:
                     tvData.setText(DataController.getInstance().getData());
                     scrollDown(scrollView);
+                    try {
+                        String data = intent.getStringExtra("data");
+                        Gson gson = new Gson();
+                        PenId model = gson.fromJson(data, PenId.class);
+                        // 获取后台数据
+                        String penid = model.getData().getCfg().getPenid();
+                        getNetworkData(penid);
+                    } catch (Exception e) {
+
+                    }
                     break;
             }
         }
     };
+
+    private void getNetworkData(String penId) {
+        Type type = new TypeToken<NetworkResult<List<WifiTestResult>>>() {
+        }.getType();
+        ResultParse resultParse = new ResultParse(type);
+        MPRequest request = MPRequest.newRequest(MPRequest.Method.GET, MPRequest.DataFormat.JSON_FORMAT,
+                url + penId, null, resultParse, null, new MPNetworkListener() {
+
+                    @Override
+                    public void onPreRequest(MPRequest request) {
+
+                    }
+
+                    @Override
+                    public void onResponse(MPRequest request, Object obj, String strResponse) {
+                        NetworkResult<List<WifiTestResult>> result = (NetworkResult<List<WifiTestResult>>) obj;
+                        Log.e("ToT", strResponse);
+                        if (result.isGood()) {
+                            wifiTestResultList.clear();
+                            wifiTestResultList.addAll(result.getData());
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+
+                    @Override
+                    public void onFailed(MPRequest request, String strResponse, FailedReason reason, String failureMessage) {
+
+                    }
+                });
+
+        MPNetwork.addRequest(request);
+    }
 }

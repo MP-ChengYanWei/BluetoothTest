@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -25,7 +26,7 @@ import com.mpen.bluetooth.utils.DataController;
  * Created by cyw on 2018/10/10.
  */
 
-public class ShowTestResultActivity extends BaseActivity {
+public class ShowTestResultActivity extends BaseActivity implements View.OnClickListener {
 
     private ScrollView scrollView;
     private TextView tvData;
@@ -41,6 +42,7 @@ public class ShowTestResultActivity extends BaseActivity {
     private int batchCycle;
     private TextView tvResult;
     private int count;
+    private TextView tvStop;
 
 
     @Override
@@ -72,6 +74,8 @@ public class ShowTestResultActivity extends BaseActivity {
         tvPenSize = findViewById(R.id.tv_pen_size);
 
         tvValidData = findViewById(R.id.tv_valid_data);
+
+        tvStop = findViewById(R.id.tv_stop);
     }
 
     private void selectAction(int type) {
@@ -90,6 +94,8 @@ public class ShowTestResultActivity extends BaseActivity {
                 SendRequestToPen.sendSRT(50, count, getIntent().getIntExtra("cycle", 0));
                 break;
             case 7:
+                tvStop.setVisibility(View.VISIBLE);
+                tvStop.setOnClickListener(this);
                 batchCount = getIntent().getIntExtra("count", 1);
                 batchCycle = getIntent().getIntExtra("cycle", 0);
                 count = batchCount;
@@ -239,4 +245,14 @@ public class ShowTestResultActivity extends BaseActivity {
         tvResult.setTextColor(Color.GREEN);
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.tv_stop:
+                handler.removeCallbacksAndMessages(null);
+                batchCount = 0;
+                tvStop.setText("已停止发送");
+                break;
+        }
+    }
 }

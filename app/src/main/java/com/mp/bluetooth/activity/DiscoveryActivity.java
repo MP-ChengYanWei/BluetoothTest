@@ -27,7 +27,7 @@ import java.util.List;
  * Created by cyw on 2018/10/9.
  */
 
-public class DiscoveryActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class DiscoveryActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
     private Context context;
 

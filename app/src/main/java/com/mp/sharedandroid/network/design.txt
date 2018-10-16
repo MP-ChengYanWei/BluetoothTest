@@ -1,0 +1,65 @@
+网络框架模块
+主要用于http，https方式的网络相关操作；
+
+
+实现方法
+在开源网络框架volley之上架构的适应本项目的网络模块；
+简化了volley接口调用；
+增加了cdn网络调用扩展；
+提供了网络相关操作的帮助类MPNetworkHelper；
+支持网络调用全局配置化，参考MPNetworkConfig类
+支持自定义网络请求request；
+提供多种网络回调方式，支持实体对象返回；
+支持网络信息缓存机制，目前仅用到的是volley自带的缓存机制；
+支持自定义解析返回的实体对象；
+支持json格式检查机制；
+支持带中文的url格式；
+增加了网络传输层引擎切换，增加了OkHttp传输支持
+
+
+使用方式
+通过定制MPRequest以及MPNetwork类的静态方法调用然后MPNetworkListener接口回调处理即可使用；
+如下是简单示例，更多操作可以详细参照单元测试代码；
+
+MPRequest request = MPRequest.newRequest(MPRequest.Method.GET,
+                "http://www.baidu.com/", null, new MPNetworkListener() {
+
+                    @Override
+                    public void onPreRequest() {
+
+                    }
+
+                    @Override
+                    public void onResponse(Object obj, String strResponse) {
+
+                    }
+
+                    @Override
+                    public void onFailed(String strResponse, FailedReason reason, String failureMessage) {
+
+                    }
+                });
+        MPNetwork.addRequest(request);
+
+
+使用okHttp作为传输层来使用
+MPNetwork.setEngine(MPNetwork.OK_HTTP);
+MPRequest request = MPRequest.newRequest(MPRequest.Method.GET,
+                "http://www.baidu.com/", null, new MPNetworkListener() {
+
+                    @Override
+                    public void onPreRequest() {
+
+                    }
+
+                    @Override
+                    public void onResponse(Object obj, String strResponse) {
+
+                    }
+
+                    @Override
+                    public void onFailed(String strResponse, FailedReason reason, String failureMessage) {
+
+                    }
+                });
+        MPNetwork.addRequest(request);

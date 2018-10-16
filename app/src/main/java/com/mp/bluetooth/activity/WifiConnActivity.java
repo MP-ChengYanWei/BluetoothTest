@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
@@ -35,7 +34,7 @@ import java.util.List;
  * Created by cyw on 2018/10/10.
  */
 
-public class WifiConnActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
+public class WifiConnActivity extends BaseActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
 
     private List<String> wifiList = new ArrayList<>();
     private List<String> connList = new ArrayList<>();// wifi连接列表
@@ -50,6 +49,7 @@ public class WifiConnActivity extends AppCompatActivity implements AdapterView.O
     private ListView lvConnList;
     private ArrayAdapter<String> connAdapter;
     private boolean isWifiConnIng = false;
+    private TextView tvRefresh;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,9 +80,14 @@ public class WifiConnActivity extends AppCompatActivity implements AdapterView.O
         lvConnList = findViewById(R.id.lv_conn_list);
         connAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, connList);
         lvConnList.setAdapter(connAdapter);
+
+        tvRefresh = findViewById(R.id.tv_refresh);
+        tvRefresh.setOnClickListener(this);
     }
 
     private void getWifiList() {
+        wifiList.clear();
+        wifiListAdapter.notifyDataSetChanged();
         SendRequestToPen.getTestWifiList(2);
     }
 
@@ -177,7 +182,11 @@ public class WifiConnActivity extends AppCompatActivity implements AdapterView.O
                 addWifi();
                 break;
             case R.id.tv_conn_wifi:
-                connWifi();
+//                connWifi();
+                connAllWifi();
+                break;
+            case R.id.tv_refresh:
+                getWifiList();
                 break;
         }
     }
@@ -189,6 +198,23 @@ public class WifiConnActivity extends AppCompatActivity implements AdapterView.O
         }
         isWifiConnIng = true;
         SendRequestToPen.connWifi(connList.remove(0));
+        connAdapter.notifyDataSetChanged();
+    }
+
+    private void connAllWifi() {
+        if (connList.isEmpty()) {
+            Toast.makeText(this, "请添加WIFI信息", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < connList.size(); i++) {
+            sb.append(connList.get(i));
+            if (i != connList.size() - 1) {
+                sb.append(",");
+            }
+        }
+        SendRequestToPen.connWifi(sb.toString());
+        connList.clear();
         connAdapter.notifyDataSetChanged();
     }
 

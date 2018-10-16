@@ -30,7 +30,7 @@ import java.util.List;
  * Created by cyw on 2018/10/10.
  */
 
-public class BTAndWFActivity extends AppCompatActivity {
+public class BTAndWFActivity extends BaseActivity {
 
     private List<String> wifiList = new ArrayList<>();
     private ScrollView scrollView;
