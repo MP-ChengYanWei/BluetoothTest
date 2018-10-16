@@ -144,7 +144,7 @@ public class PenWifiTestActivity extends BaseActivity {
 
                     @Override
                     public void onFailed(MPRequest request, String strResponse, FailedReason reason, String failureMessage) {
-
+                        Log.e("ToT", strResponse);
                     }
                 });
 
