@@ -4,6 +4,15 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     useLibrary 'org.apache.http.legacy'
 
+    signingConfigs {
+        Viaton {
+            keyAlias 'Viaton'
+            keyPassword 'viaton'
+            storeFile file('/config/key/Viaton.keys')
+            storePassword 'viaton'
+        }
+    }
+
     defaultConfig {
         applicationId "com.mp.bluetooth"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -16,6 +25,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.Viaton
+        }
+        debug {
+            signingConfig signingConfigs.Viaton
         }
     }
 }
